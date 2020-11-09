@@ -107,12 +107,13 @@ def is_win(board,chip):
         return False
 
 def evaluate(board):
-    if count_seq(board,'H',4) >= 1:
-        return -100000
-    else:
-        human_score = count_seq(board,'H',4)*10000+count_seq(board,'H',3)*10000+count_seq(board,'H',2)*100
-        bot_score = count_seq(board,'B',4)*10000+count_seq(board,'B',3)*10000+count_seq(board,'B',2)*100
-        return bot_score-human_score
+
+    if count_seq(board,'B',4) >= 1:
+        return 1000000
+
+    human_score = count_seq(board,'H',4)*10000+count_seq(board,'H',3)*1000+count_seq(board,'H',2)*100
+    bot_score = count_seq(board,'B',4)*10000+count_seq(board,'B',3)*1000+count_seq(board,'B',2)*100
+    return bot_score-human_score
 
 def count_chip(state):
     return sum([1 for char in state if char != ' '])
@@ -125,9 +126,7 @@ def alpha_beta_decision(state):
     #handle max _depth
     global max_depth
     n_chip = count_chip(state)
-    if n_chip < 5:
-        max_depth = 4
-    elif n_chip < 12:
+    if n_chip < 12:
         max_depth = 6
     elif n_chip < 24:
         max_depth = 8
@@ -141,8 +140,8 @@ def alpha_beta_decision(state):
     for push_col in range(7):
         if not is_valid_push(board,push_col):
             continue
-        state = push(state,'B',push_col)
-        ret = min_value(state,a,b,0)
+        new_state = push(state,'B',push_col)
+        ret = min_value(new_state,a,b,0)
         if ret > max_value:
             max_value = ret
             action = push_col
@@ -154,7 +153,7 @@ def min_value(state,a,b,level):
     #terminate
     board = get_board(state)
     if is_win(board,'B'):
-        return 1000000
+        return 10000000
 
     #cutoff 
     if level >= max_depth:
@@ -165,8 +164,8 @@ def min_value(state,a,b,level):
     for push_col in range(7):
         if not is_valid_push(board,push_col):
             continue
-        state = push(state,'H',push_col)
-        v = min(v,max_value(state,a,b,level+1))
+        new_state = push(state,'H',push_col)
+        v = min(v,max_value(new_state,a,b,level+1))
         if v <= a:
             return v
         if b == float('inf'):
@@ -179,7 +178,7 @@ def max_value(state,a,b,level):
     #terminate
     board = get_board(state)
     if is_win(board,'H'):
-        return -1000000 
+        return -10000000
 
     v = float('-inf')
     
@@ -189,13 +188,13 @@ def max_value(state,a,b,level):
         new_state = push(state,'B',push_col)
         new_board = get_board(new_state)
         if is_win(new_board,'B'):
-            return 1000000
+            return 10000000
     
     for push_col in range(7):
         if not is_valid_push(board,push_col):
             continue
-        state = push(state,'B',push_col)
-        v = max(v,min_value(state,a,b,level+1))
+        new_state = push(state,'B',push_col)
+        v = max(v,min_value(new_state,a,b,level+1))
         if v >= b:
             return v
         if a == float('-inf'):
