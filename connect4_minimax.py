@@ -141,7 +141,7 @@ def alpha_beta_decision(state):
         if not is_valid_push(board,push_col):
             continue
         new_state = push(state,'B',push_col)
-        ret = min_value(new_state,a,b,0)
+        return_value = min_value(new_state,a,b,0)
         if return_value > max_value:
             max_value = return_value
             action = push_col
