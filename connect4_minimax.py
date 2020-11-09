@@ -142,8 +142,8 @@ def alpha_beta_decision(state):
             continue
         new_state = push(state,'B',push_col)
         ret = min_value(new_state,a,b,0)
-        if ret > max_value:
-            max_value = ret
+        if return_value > max_value:
+            max_value = return_value
             action = push_col
     print('Bot move is:',action+1)
     return action
